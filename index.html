@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Mi UCSF - Universidad Católica de Santa Fe</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ucsf-blue-primary: #003366;
+            --ucsf-blue-dark: #002244;
+            --ucsf-blue-light: #0d47a1;
+            --ucsf-green: #00a859;
+            --ucsf-green-dark: #2e7d32;
+            --ucsf-bg: #f4f6f9;
+            --ucsf-card-bg: #ffffff;
+            --ucsf-text-main: #212529;
+            --ucsf-text-muted: #6c757d;
+            --sidebar-width: 260px;
+            --header-height: 65px;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--ucsf-bg);
+            color: var(--ucsf-text-main);
+            overflow-x: hidden;
+        }
+
+        /* Top Header Navigation */
+        .top-navbar {
+            height: var(--header-height);
+            background-color: #ffffff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .brand-logo-container {
+            width: var(--sidebar-width);
+            display: flex;
+            align-items: center;
+            background-color: var(--ucsf-blue-primary);
+            height: 100%;
+            padding: 0 1.25rem;
+            color: #ffffff;
+            transition: width var(--transition-speed);
+        }
+
+        /* Sidebar Structure */
+        .sidebar-wrapper {
+            width: var(--sidebar-width);
+            position: fixed;
+            top: var(--header-height);
+            bottom: 0;
+            left: 0;
+            z-index: 1020;
+            background-color: #ffffff;
+            border-right: 1px solid rgba(0,0,0,0.06);
+            transition: all var(--transition-speed) ease-in-out;
+            overflow-y: auto;
+        }
+
+        .sidebar-wrapper.collapsed {
+            left: calc(-1 * var(--sidebar-width));
+        }
+
+        .main-content {
+            margin-top: var(--header-height);
+            margin-left: var(--sidebar-width);
+            padding: 1.75rem;
+            transition: margin-left var(--transition-speed) ease-in-out;
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Nav Links Styling */
+        .sidebar-nav {
+            padding: 1rem 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        .sidebar-nav .nav-category {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #8c98a4;
+            padding: 0.75rem 1.5rem 0.25rem;
+            font-weight: 700;
+        }
+
+        .sidebar-nav .nav-item-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.93rem;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-nav .nav-item-link i {
+            font-size: 1.1rem;
+            width: 28px;
+            color: #718096;
+            transition: color 0.2s;
+        }
+
+        .sidebar-nav .nav-item-link:hover {
+            background-color: rgba(0, 51, 102, 0.04);
+            color: var(--ucsf-blue-primary);
+        }
+
+        .sidebar-nav .nav-item-link:hover i {
+            color: var(--ucsf-blue-primary);
+        }
+
+        .sidebar-nav .nav-item-link.active {
+            background-color: rgba(0, 51, 102, 0.08);
+            color: var(--ucsf-blue-primary);
+            border-left-color: var(--ucsf-blue-primary);
+            font-weight: 600;
+        }
+
+        .sidebar-nav .nav-item-link.active i {
+            color: var(--ucsf-blue-primary);
+        }
+
+        /* Cards & Containers Customization */
+        .card-custom {
+            border: none;
+            border-radius: 12px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-custom:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--ucsf-blue-primary) 0%, var(--ucsf-blue-light) 100%);
+            color: white;
+            border-radius: 14px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            right: -40px;
+            bottom: -40px;
+            width: 220px;
+            height: 220px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .badge-ucsf-green {
+            background-color: rgba(0, 168, 89, 0.12);
+            color: var(--ucsf-green-dark);
+            font-weight: 600;
+        }
+
+        .badge-ucsf-blue {
+            background-color: rgba(0, 51, 102, 0.12);
+            color: var(--ucsf-blue-primary);
+            font-weight: 600;
+        }
+
+        /* Custom Buttons */
+        .btn-ucsf-primary {
+            background-color: var(--ucsf-blue-primary);
+            color: #ffffff;
+            border: none;
+            font-weight: 500;
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.2s;
+        }
+
+        .btn-ucsf-primary:hover {
+            background-color: var(--ucsf-blue-dark);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,51,102,0.25);
+        }
+
+        .btn-ucsf-success {
+            background-color: var(--ucsf-green);
+            color: #ffffff;
+            border: none;
+            font-weight: 500;
+            border-radius: 8px;
+        }
+
+        .btn-ucsf-success:hover {
+            background-color: var(--ucsf-green-dark);
+            color: #ffffff;
+        }
+
+        /* View Section Handling */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.35s ease-in-out forwards;
+        }
+
+        .view-section.active-view {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Moodle Course Card */
+        .course-card {
+            border-top: 4px solid var(--ucsf-blue-primary);
+        }
+
+        .course-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Agenda Item */
+        .agenda-item {
+            border-left: 4px solid #e2e8f0;
+            padding-left: 1rem;
+            margin-bottom: 1.2rem;
+            transition: border-color 0.2s;
+        }
+
+        .agenda-item.active-class {
+            border-left-color: var(--ucsf-green);
+            background-color: rgba(0, 168, 89, 0.02);
+            border-radius: 0 8px 8px 0;
+            padding: 0.5rem 0.75rem 0.5rem 1rem;
+        }
+
+        /* Document Preview Modal / Frame */
+        .certificate-paper {
+            background: #fff;
+            border: 2px solid #333;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .certificate-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 5rem;
+            color: rgba(0, 51, 102, 0.04);
+            font-weight: 800;
+            pointer-events: none;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* Toast Container Positioning */
+        .toast-container {
+            z-index: 1090;
+        }
+
+        /* Responsive Breakpoints Adjustments */
+        @media (max-width: 991.88px) {
+            .sidebar-wrapper {
+                left: calc(-1 * var(--sidebar-width));
+            }
+            .sidebar-wrapper.show-mobile {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1rem;
+            }
+            .brand-logo-container {
+                width: auto;
+                background-color: transparent;
+                color: var(--ucsf-blue-primary);
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header Navigation -->
+    <header class="top-navbar d-flex align-items-center justify-content-between px-3">
+        <div class="d-flex align-items-center">
+            <button class="btn btn-link text-dark p-1 me-3 fs-5" id="sidebarToggle" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="brand-logo-container">
+                <i class="fa-solid fa-graduation-cap fs-4 me-2"></i>
+                <span class="fw-bold fs-5 tracking-wide">Mi UCSF</span>
+            </div>
+        </div>
+
+        <!-- Right Header Items -->
+        <div class="d-flex align-items-center gap-2 gap-md-3">
+            <!-- Role Selector -->
+            <div class="dropdown">
+                <button class="btn btn-light btn-sm dropdown-toggle border d-flex align-items-center gap-2" type="button" id="roleSelectorDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="badge bg-primary rounded-circle p-1" id="roleBadgeIcon"><i class="fa-solid fa-user-graduate"></i></span>
+                    <span class="d-none d-md-inline text-start lh-1" style="font-size: 0.8rem;">
+                        <span class="text-muted d-block" style="font-size: 0.68rem;">Perfil Activo</span>
+                        <strong id="activeRoleName">Estudiante: Jesús Romano Juárez</strong>
+                    </span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="roleSelectorDropdown">
+                    <li><h6 class="dropdown-header">Cambiar Simulación de Perfil</h6></li>
+                    <li>
+                        <button class="dropdown-item active d-flex align-items-center gap-2" id="roleStudentBtn" onclick="switchUserRole('student')">
+                            <i class="fa-solid fa-user-graduate text-primary"></i> Estudiante: Jesús Romano
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item d-flex align-items-center gap-2" id="roleGuestBtn" onclick="switchUserRole('guest')">
+                            <i class="fa-solid fa-user-tag text-success"></i> Aspirante / Público General
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Notifications Dropdown -->
+            <div class="dropdown" id="notificationDropdownContainer">
+                <button class="btn btn-light btn-sm border position-relative p-2 rounded-circle" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifBadgeCount">
+                        3
+                    </span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end shadow-lg p-0" style="width: 320px; max-height: 420px; overflow-y: auto;" aria-labelledby="notifDropdown">
+                    <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                        <h6 class="m-0 fw-bold fs-6">Notificaciones</h6>
+                        <button class="btn btn-link btn-sm p-0 text-decoration-none fs-7" onclick="markAllNotificationsRead()">Marcar leídas</button>
+                    </div>
+                    <div id="notificationsList" class="list-group list-group-flush fs-7">
+                        <a href="#" class="list-group-item list-group-item-action p-3 notification-item unread">
+                            <div class="d-flex w-100 justify-content-between mb-1">
+                                <span class="fw-semibold text-primary"><i class="fa-solid fa-circle-info me-1"></i> Nueva Entrega Moodle</span>
+                                <small class="text-muted">Hace 15m</small>
+                            </div>
+                            <p class="mb-1 text-muted" style="font-size: 0.82rem;">Prof. Ocaño subió el Trabajo Práctico Nº 2 en Doctrina Social.</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action p-3 notification-item unread">
+                            <div class="d-flex w-100 justify-content-between mb-1">
+                                <span class="fw-semibold text-success"><i class="fa-solid fa-file-invoice-dollar me-1"></i> Cuota Octubre</span>
+                                <small class="text-muted">Hace 2h</small>
+                            </div>
+                            <p class="mb-1 text-muted" style="font-size: 0.82rem;">Tu pago de la cuota de Octubre ha sido acreditado exitosamente.</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action p-3 notification-item unread">
+                            <div class="d-flex w-100 justify-content-between mb-1">
+                                <span class="fw-semibold text-warning"><i class="fa-solid fa-calendar-check me-1"></i> Examen Final</span>
+                                <small class="text-muted">Ayer</small>
+                            </div>
+                            <p class="mb-1 text-muted" style="font-size: 0.82rem;">Se abrió la inscripción para los turnos de Exámenes de Noviembre.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Avatar & Profile -->
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Avatar" class="rounded-circle border" width="38" height="38" style="object-fit: cover;">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userProfileDropdown">
+                    <li class="px-3 py-2 border-bottom">
+                        <strong class="d-block" id="userDropdownName">Jesús Romano Juárez</strong>
+                        <small class="text-muted" id="userDropdownEmail">j.romano@ucsf.edu.ar</small>
+                    </li>
+                    <li><a class="dropdown-item mt-1" href="#" onclick="openProfileModal()"><i class="fa-regular fa-id-card me-2 text-muted"></i> Mi Perfil Académico</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="showHelpModal()"><i class="fa-solid fa-headset me-2 text-muted"></i> Mesa de Ayuda / Soporte</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="triggerLogout()"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar-wrapper" id="sidebar">
+        <ul class="sidebar-nav">
+            <li class="nav-category">Principal</li>
+            <li>
+                <a class="nav-item-link active" data-view="dashboard" onclick="navigateTo('dashboard', this)">
+                    <i class="fa-solid fa-house"></i> <span>Inicio</span>
+                </a>
+            </li>
+
+            <!-- Private Academic Group (Hidden for Guests) -->
+            <div class="private-student-module">
+                <li class="nav-category">Gestión Académica</li>
+                <li>
+                    <a class="nav-item-link" data-view="academic" onclick="navigateTo('academic', this)">
+                        <i class="fa-solid fa-book-open"></i> <span>Académico & Campus</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-item-link" data-view="payments" onclick="navigateTo('payments', this)">
+                        <i class="fa-solid fa-credit-card"></i> <span>Aranceles y Pagos</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-item-link" data-view="tramites" onclick="navigateTo('tramites', this)">
+                        <i class="fa-solid fa-file-signature"></i> <span>Trámites y Certificados</span>
+                    </a>
+                </li>
+            </div>
+
+            <li class="nav-category">Portal Web UCSF</li>
+            <li>
+                <a class="nav-item-link" data-view="news" onclick="navigateTo('news', this)">
+                    <i class="fa-solid fa-globe"></i> <span>Comunidad & Noticias</span>
+                </a>
+            </li>
+
+            <!-- Guest Academic Offer Shortcut (Shown for Guests) -->
+            <div class="public-guest-module d-none">
+                <li class="nav-category">Información General</li>
+                <li>
+                    <a class="nav-item-link" data-view="academic-offer" onclick="navigateTo('academic-offer', this)">
+                        <i class="fa-solid fa-graduation-cap"></i> <span>Oferta Académica 2027</span>
+                    </a>
+                </li>
+            </div>
+        </ul>
+
+        <!-- Fast Contact Widget Footer inside Sidebar -->
+        <div class="p-3 m-3 bg-light rounded-3 border text-center mt-auto fs-7">
+            <i class="fa-brands fa-whatsapp text-success fs-4 mb-1"></i>
+            <h6 class="fw-bold mb-1" style="font-size: 0.85rem;">Mesa de Ayuda UCSF</h6>
+            <p class="text-muted mb-2" style="font-size: 0.75rem;">¿Consultas o problemas técnicos?</p>
+            <a href="https://wa.me/5493420000000" target="_blank" class="btn btn-outline-success btn-sm w-100 rounded-pill">Contactar por WhatsApp</a>
+        </div>
+    </aside>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="main-content" id="mainContent">
+
+        <!-- ========================================== -->
+        <!-- VIEW 1: CENTRAL DASHBOARD SECTION          -->
+        <!-- ========================================== -->
+        <section id="view-dashboard" class="view-section active-view">
+            <!-- Student Banner -->
+            <div class="welcome-banner mb-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                <div>
+                    <span class="badge bg-white text-primary mb-2 fw-semibold"><i class="fa-solid fa-circle-check text-success me-1"></i> Alumno Regular</span>
+                    <h2 class="fw-bold mb-1" id="dashWelcomeTitle">¡Hola, Jesús Romano Juárez!</h2>
+                    <p class="mb-0 text-white-50" id="dashWelcomeSubtitle">Licenciatura en Tecnologías de la Información — Legajo: UCSF-98421</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-light btn-sm text-primary fw-semibold" onclick="navigateTo('academic', document.querySelector('[data-view=academic]'))">
+                        <i class="fa-solid fa-laptop-code me-1"></i> Mis Aulas Virtuales
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid Layout -->
+            <div class="row g-4">
+                <!-- Agenda Column -->
+                <div class="col-lg-7">
+                    <!-- Today Agenda -->
+                    <div class="card card-custom p-3 p-md-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0 text-primary-dark"><i class="fa-regular fa-calendar-days text-primary me-2"></i>Agenda de Hoy</h5>
+                            <span class="badge bg-light text-dark border" id="currentDateBadge">Sábado, 3 de Octubre</span>
+                        </div>
+
+                        <div class="agenda-list">
+                            <div class="agenda-item active-class">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <span class="badge badge-ucsf-green mb-1"><i class="fa-solid fa-play me-1"></i>En curso ahora</span>
+                                        <h6 class="fw-bold mb-1">Doctrina Social de la Iglesia</h6>
+                                        <p class="text-muted small mb-0"><i class="fa-solid fa-location-dot me-1 text-danger"></i> Sede Central - Aula 12 (Piso 1)</p>
+                                        <p class="text-muted small mb-0"><i class="fa-solid fa-user-tie me-1"></i> Prof. Ocaño Efraín</p>
+                                    </div>
+                                    <span class="fw-bold text-dark fs-7 bg-white px-2 py-1 rounded border">08:00 - 10:00 hs</span>
+                                </div>
+                            </div>
+
+                            <div class="agenda-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <span class="badge badge-ucsf-blue mb-1"><i class="fa-regular fa-clock me-1"></i>Siguiente Clase</span>
+                                        <h6 class="fw-bold mb-1">Gestión de la Innovación</h6>
+                                        <p class="text-muted small mb-0"><i class="fa-solid fa-location-dot me-1 text-danger"></i> Sede Central - Aula 04 (Planta Baja)</p>
+                                        <p class="text-muted small mb-0"><i class="fa-solid fa-user-tie me-1"></i> Prof. Martínez Goyena Rodrigo</p>
+                                    </div>
+                                    <span class="fw-bold text-dark fs-7 bg-white px-2 py-1 rounded border">10:00 - 12:00 hs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline-secondary btn-sm w-100 mt-2" onclick="showCampusMapModal()">
+                            <i class="fa-solid fa-map-location-dot me-1"></i> Ver Mapa Interactiva de Aulas y Servicios Sede Central
+                        </button>
+                    </div>
+
+                    <!-- Active Courses / Moodle Shortcuts -->
+                    <div class="card card-custom p-3 p-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0"><i class="fa-solid fa-graduation-cap text-primary me-2"></i>Materias Activas (Moodle LMS)</h5>
+                            <a href="#" class="small text-decoration-none fw-semibold" onclick="navigateTo('academic', document.querySelector('[data-view=academic]'))">Ver todas</a>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card h-100 border rounded-3 course-card p-3">
+                                    <div class="card-body p-0">
+                                        <div>
+                                            <span class="badge bg-light text-primary border mb-2">Comisión A</span>
+                                            <h6 class="fw-bold text-truncate">Doctrina Social de la Iglesia</h6>
+                                            <small class="text-muted d-block mb-2">Prof. Ocaño Efraín</small>
+                                            <div class="alert alert-warning py-1 px-2 mb-3 fs-7 border-0 rounded-2">
+                                                <i class="fa-solid fa-clock me-1"></i> 1 entrega pendiente (Viernes)
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-ucsf-primary btn-sm w-100" onclick="openMoodleModal('Doctrina Social de la Iglesia')">
+                                            <i class="fa-solid fa-right-to-bracket me-1"></i> Entrar al Aula
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card h-100 border rounded-3 course-card p-3">
+                                    <div class="card-body p-0">
+                                        <div>
+                                            <span class="badge bg-light text-primary border mb-2">Comisión B</span>
+                                            <h6 class="fw-bold text-truncate">Gestión de la Innovación</h6>
+                                            <small class="text-muted d-block mb-2">Prof. Martínez Goyena R.</small>
+                                            <div class="alert alert-success py-1 px-2 mb-3 fs-7 border-0 rounded-2">
+                                                <i class="fa-solid fa-check-circle me-1"></i> Al día sin pendientes
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-ucsf-primary btn-sm w-100" onclick="openMoodleModal('Gestión de la Innovación')">
+                                            <i class="fa-solid fa-right-to-bracket me-1"></i> Entrar al Aula
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card h-100 border rounded-3 course-card p-3">
+                                    <div class="card-body p-0">
+                                        <div>
+                                            <span class="badge bg-light text-primary border mb-2">Comisión A</span>
+                                            <h6 class="fw-bold text-truncate">Arquitectura de Sistemas</h6>
+                                            <small class="text-muted d-block mb-2">Prof. Sanchez María</small>
+                                            <div class="alert alert-warning py-1 px-2 mb-3 fs-7 border-0 rounded-2">
+                                                <i class="fa-solid fa-clock me-1"></i> Foro de debate requiere respuesta
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-ucsf-primary btn-sm w-100" onclick="openMoodleModal('Arquitectura de Sistemas')">
+                                            <i class="fa-solid fa-right-to-bracket me-1"></i> Entrar al Aula
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card h-100 border rounded-3 course-card p-3">
+                                    <div class="card-body p-0">
+                                        <div>
+                                            <span class="badge bg-light text-primary border mb-2">Comisión Única</span>
+                                            <h6 class="fw-bold text-truncate">Base de Datos II</h6>
+                                            <small class="text-muted d-block mb-2">Prof. Rossi Carlos</small>
+                                            <div class="alert alert-info py-1 px-2 mb-3 fs-7 border-0 rounded-2">
+                                                <i class="fa-solid fa-bullhorn me-1"></i> Nuevo material publicado
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-ucsf-primary btn-sm w-100" onclick="openMoodleModal('Base de Datos II')">
+                                            <i class="fa-solid fa-right-to-bracket me-1"></i> Entrar al Aula
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial & News Column -->
+                <div class="col-lg-5">
+                    <!-- Quick Financial Summary -->
+                    <div class="card card-custom p-3 p-md-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0"><i class="fa-solid fa-wallet text-success me-2"></i>Estado Financiero</h5>
+                            <span class="badge badge-ucsf-green">AL DÍA</span>
+                        </div>
+
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted d-block">Cuota Octubre 2026</small>
+                                    <strong class="fs-5 text-dark">$ 82.500,00</strong>
+                                </div>
+                                <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i>Pagado</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary btn-sm flex-fill" onclick="downloadReceipt('Octubre 2026', '$ 82.500,00')">
+                                <i class="fa-solid fa-file-pdf me-1"></i> Descargar Comprobante
+                            </button>
+                            <button class="btn btn-ucsf-primary btn-sm flex-fill" onclick="navigateTo('payments', document.querySelector('[data-view=payments]'))">
+                                Ver Aranceles
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick News Widget -->
+                    <div class="card card-custom p-3 p-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0"><i class="fa-solid fa-newspaper text-info me-2"></i>Noticias Institucionales</h5>
+                            <a href="#" class="small text-decoration-none fw-semibold" onclick="navigateTo('news', document.querySelector('[data-view=news]'))">Ver Feed</a>
+                        </div>
+
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex gap-3 align-items-center">
+                                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=200" class="rounded-3" width="75" height="75" style="object-fit: cover;" alt="Noticia UCSF">
+                                <div>
+                                    <span class="badge bg-light text-primary border mb-1" style="font-size: 0.65rem;">ACADÉMICAS</span>
+                                    <h6 class="fw-bold fs-7 mb-1 hover-primary cursor-pointer" onclick="navigateTo('news', document.querySelector('[data-view=news]'))">UCSF firmó convenio marco de intercambio con universidades europeas</h6>
+                                    <small class="text-muted">30 Septiembre, 2026</small>
+                                </div>
+                            </div>
+
+                            <hr class="my-1">
+
+                            <div class="d-flex gap-3 align-items-center">
+                                <img src="https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&q=80&w=200" class="rounded-3" width="75" height="75" style="object-fit: cover;" alt="Noticia Posgrados">
+                                <div>
+                                    <span class="badge bg-light text-success border mb-1" style="font-size: 0.65rem;">POSGRADOS</span>
+                                    <h6 class="fw-bold fs-7 mb-1 hover-primary cursor-pointer" onclick="navigateTo('news', document.querySelector('[data-view=news]'))">Apertura de inscripciones para Maestrías e Investigaciones 2027</h6>
+                                    <small class="text-muted">28 Septiembre, 2026</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: ACADEMIC & MOODLE SECTION          -->
+        <!-- ========================================== -->
+        <section id="view-academic" class="view-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold m-0 text-primary-dark">Gestión Académica & Campus</h3>
+                    <p class="text-muted small m-0">Aulas virtuales Moodle, horarios de cursado e inscripción a exámenes finales</p>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <ul class="nav nav-pills mb-4 bg-white p-2 rounded-3 border shadow-sm" id="academicTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-semibold" id="moodle-tab" data-bs-toggle="tab" data-bs-target="#tab-moodle" type="button" role="tab"><i class="fa-solid fa-laptop-code me-1"></i> Aulas Virtuales (Moodle)</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold" id="exams-tab" data-bs-toggle="tab" data-bs-target="#tab-exams" type="button" role="tab"><i class="fa-solid fa-pen-to-square me-1"></i> Inscripción a Exámenes Finales</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold" id="schedule-tab" data-bs-toggle="tab" data-bs-target="#tab-schedule" type="button" role="tab"><i class="fa-solid fa-clock me-1"></i> Comisiones y Horarios</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="academicTabsContent">
+                <!-- Tab 1: Moodle Courses Grid -->
+                <div class="tab-pane fade show active" id="tab-moodle" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card card-custom h-100 p-3">
+                                <span class="badge bg-primary-subtle text-primary mb-2 align-self-start">Cuatrimestre 2 - 2026</span>
+                                <h5 class="fw-bold">Doctrina Social de la Iglesia</h5>
+                                <p class="text-muted small mb-2">Comisión A | Prof. Ocaño Efraín</p>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 75%;"></div>
+                                </div>
+                                <div class="mt-auto">
+                                    <button class="btn btn-ucsf-primary btn-sm w-100" onclick="openMoodleModal('Doctrina Social de la Iglesia')">Ingresar al Aula Virtual</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card card-custom h-100 p-3">
+                                <span class="badge bg-primary-subtle text-primary mb-2 align-self-start">Cuatrimestre 2 - 2026</span>
+                                <h5 class="fw-bold">Gestión de la Innovación</h5>
+                                <p class="text-muted small mb-2">Comisión B | Prof. Martínez Goyena Rodrigo</p>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 90%;"></div>
+                                </div>
+                                <div class="mt-auto">
+                                    <button class="btn btn-ucsf-primary btn-sm w-100" onclick="openMoodleModal('Gestión de la Innovación')">Ingresar al Aula Virtual</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card card-custom h-100 p-3">
+                                <span class="badge bg-primary-subtle text-primary mb-2 align-self-start">Cuatrimestre 2 - 2026</span>
+                                <h5 class="fw-bold">Arquitectura de Sistemas</h5>
+                                <p class="text-muted small mb-2">Comisión A | Prof. Sanchez María</p>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 60%;"></div>
+                                </div>
+                                <div class="mt-auto">
+                                    <button class="btn btn-ucsf-primary btn-sm w-100" onclick="openMoodleModal('Arquitectura de Sistemas')">Ingresar al Aula Virtual</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card card-custom h-100 p-3">
+                                <span class="badge bg-primary-subtle text-primary mb-2 align-self-start">Cuatrimestre 2 - 2026</span>
+                                <h5 class="fw-bold">Base de Datos II</h5>
+                                <p class="text-muted small mb-2">Comisión Única | Prof. Rossi Carlos</p>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 80%;"></div>
+                                </div>
+                                <div class="mt-auto">
+                                    <button class="btn btn-ucsf-primary btn-sm w-100" onclick="openMoodleModal('Base de Datos II')">Ingresar al Aula Virtual</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Exam Registration -->
+                <div class="tab-pane fade" id="tab-exams" role="tabpanel">
+                    <div class="card card-custom p-4">
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-calendar-check text-primary me-2"></i>Turno Noviembre / Diciembre 2026</h5>
+                        <p class="text-muted small mb-4">Selecciona las materias correspondientes para inscribirte a mesa examinadora. Recuerda verificar las condiciones con 48 hs de antelación.</p>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Materia</th>
+                                        <th>Fecha & Hora</th>
+                                        <th>Docente Titular</th>
+                                        <th>Condición</th>
+                                        <th>Estado / Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Análisis de Sistemas I</strong></td>
+                                        <td>18 Nov, 2026 - 15:00 hs</td>
+                                        <td>Prof. Gomez Hernán</td>
+                                        <td><span class="badge bg-success">Regular</span></td>
+                                        <td>
+                                            <button class="btn btn-ucsf-primary btn-sm" id="examBtn1" onclick="handleExamRegistration('Análisis de Sistemas I', this)">Inscribirme</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Programación II</strong></td>
+                                        <td>22 Nov, 2026 - 09:00 hs</td>
+                                        <td>Prof. Fernandez Laura</td>
+                                        <td><span class="badge bg-success">Regular</span></td>
+                                        <td>
+                                            <button class="btn btn-ucsf-primary btn-sm" id="examBtn2" onclick="handleExamRegistration('Programación II', this)">Inscribirme</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Inglés Técnico II</strong></td>
+                                        <td>27 Nov, 2026 - 18:00 hs</td>
+                                        <td>Prof. Smith John</td>
+                                        <td><span class="badge bg-info">Promocionado</span></td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border p-2"><i class="fa-solid fa-check text-success me-1"></i> Acreditado</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Redes & Comunicaciones</strong></td>
+                                        <td>02 Dic, 2026 - 14:00 hs</td>
+                                        <td>Prof. Pereyra Mario</td>
+                                        <td><span class="badge bg-warning text-dark">Libre</span></td>
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-sm" id="examBtn3" onclick="handleExamRegistration('Redes & Comunicaciones', this)">Inscribirme Examen Libre</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Schedules -->
+                <div class="tab-pane fade" id="tab-schedule" role="tabpanel">
+                    <div class="card card-custom p-4">
+                        <h5 class="fw-bold mb-3"><i class="fa-regular fa-clock text-primary me-2"></i>Horarios Semanales de Cursado</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-center align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Lunes</th>
+                                        <th>Martes</th>
+                                        <th>Miércoles</th>
+                                        <th>Jueves</th>
+                                        <th>Viernes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold small">08:00 - 10:00</td>
+                                        <td class="bg-light">--</td>
+                                        <td class="bg-primary-subtle text-primary fw-bold">Doctrina Social (Aula 12)</td>
+                                        <td class="bg-light">--</td>
+                                        <td class="bg-primary-subtle text-primary fw-bold">Gestión Innovación (Aula 04)</td>
+                                        <td class="bg-light">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold small">10:00 - 12:00</td>
+                                        <td class="bg-success-subtle text-success fw-bold">Arq. Sistemas (Lab 2)</td>
+                                        <td class="bg-light">--</td>
+                                        <td class="bg-success-subtle text-success fw-bold">Base de Datos II (Lab 1)</td>
+                                        <td class="bg-light">--</td>
+                                        <td class="bg-light">--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: PAYMENTS & FINANCIAL SECTION       -->
+        <!-- ========================================== -->
+        <section id="view-payments" class="view-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold m-0 text-primary-dark">Aranceles, Cuotas y Pagos</h3>
+                    <p class="text-muted small m-0">Sistema de Autogestión Remota - Estado de cuenta y comprobantes</p>
+                </div>
+            </div>
+
+            <!-- KPI Row -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card card-custom p-3 border-start border-4 border-success">
+                        <small class="text-muted fw-semibold">Estado de Cuenta</small>
+                        <h4 class="fw-bold text-success mb-0 mt-1"><i class="fa-solid fa-circle-check me-1"></i> AL DÍA</h4>
+                        <small class="text-muted">Sin saldo pendiente exigible</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-3 border-start border-4 border-primary">
+                        <small class="text-muted fw-semibold">Último Pago Registrado</small>
+                        <h4 class="fw-bold text-dark mb-0 mt-1">$ 82.500,00</h4>
+                        <small class="text-muted">Cuota Octubre 2026 (Acreditado)</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-3 border-start border-4 border-warning">
+                        <small class="text-muted fw-semibold">Próximo Vencimiento</small>
+                        <h4 class="fw-bold text-dark mb-0 mt-1">10 Nov, 2026</h4>
+                        <small class="text-muted">Cuota Noviembre ($ 82.500,00)</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fees Table -->
+            <div class="card card-custom p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold m-0"><i class="fa-solid fa-list-check me-2 text-primary"></i>Historial de Cuotas Ciclo Lectivo 2026</h5>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="showToast('Sincronizado con autogestión SAR', 'info')"><i class="fa-solid fa-arrows-rotate me-1"></i> Actualizar</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Periodo / Concepto</th>
+                                <th>Importe</th>
+                                <th>1º Vencimiento</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Cuota Noviembre 2026</strong></td>
+                                <td>$ 82.500,00</td>
+                                <td>10/11/2026</td>
+                                <td><span class="badge bg-warning text-dark"><i class="fa-solid fa-clock me-1"></i> Pendiente</span></td>
+                                <td>
+                                    <button class="btn btn-ucsf-success btn-sm" onclick="openPaymentModal('Cuota Noviembre 2026', '$ 82.500,00')"><i class="fa-solid fa-credit-card me-1"></i> Pagar Online</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cuota Octubre 2026</strong></td>
+                                <td>$ 82.500,00</td>
+                                <td>10/10/2026</td>
+                                <td><span class="badge bg-success"><i class="fa-solid fa-check me-1"></i> Pagado</span></td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="downloadReceipt('Octubre 2026', '$ 82.500,00')"><i class="fa-solid fa-download me-1"></i> Comprobante</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cuota Septiembre 2026</strong></td>
+                                <td>$ 82.500,00</td>
+                                <td>10/09/2026</td>
+                                <td><span class="badge bg-success"><i class="fa-solid fa-check me-1"></i> Pagado</span></td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="downloadReceipt('Septiembre 2026', '$ 82.500,00')"><i class="fa-solid fa-download me-1"></i> Comprobante</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cuota Agosto 2026</strong></td>
+                                <td>$ 78.000,00</td>
+                                <td>10/08/2026</td>
+                                <td><span class="badge bg-success"><i class="fa-solid fa-check me-1"></i> Pagado</span></td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="downloadReceipt('Agosto 2026', '$ 78.000,00')"><i class="fa-solid fa-download me-1"></i> Comprobante</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 4: PROCEDURES & CERTIFICATES SECTION -->
+        <!-- ========================================== -->
+        <section id="view-tramites" class="view-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold m-0 text-primary-dark">Trámites y Certificados Digitales</h3>
+                    <p class="text-muted small m-0">Generación inmediata de documentación oficial con firma electrónica y QR de verificación</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Certificate Request Card -->
+                <div class="col-lg-6">
+                    <div class="card card-custom p-4 h-100">
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-file-pdf text-danger me-2"></i>Emitir Certificados con 1-Click</h5>
+                        <p class="text-muted small mb-4">Los certificados emitidos poseen código QR de validación institucional con vigencia de 90 días.</p>
+
+                        <div class="d-flex flex-column gap-3">
+                            <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="fw-bold mb-1">Certificado de Alumno Regular</h6>
+                                    <small class="text-muted">Apto para ANSES, Obra Social y Transporte</small>
+                                </div>
+                                <button class="btn btn-ucsf-primary btn-sm" onclick="generateCertificateModal('Certificado de Alumno Regular')"><i class="fa-solid fa-print me-1"></i> Generar</button>
+                            </div>
+
+                            <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="fw-bold mb-1">Historia Académica / Analítico Parcial</h6>
+                                    <small class="text-muted">Detalle de materias aprobadas y promedio</small>
+                                </div>
+                                <button class="btn btn-ucsf-primary btn-sm" onclick="generateCertificateModal('Historia Académica Parcial')"><i class="fa-solid fa-print me-1"></i> Generar</button>
+                            </div>
+
+                            <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="fw-bold mb-1">Certificado de Exámenes Rendidos</h6>
+                                    <small class="text-muted">Comprobante de asistencia a mesas examinadoras</small>
+                                </div>
+                                <button class="btn btn-ucsf-primary btn-sm" onclick="generateCertificateModal('Certificado de Examen Rendido')"><i class="fa-solid fa-print me-1"></i> Generar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Online Procedures Tracker -->
+                <div class="col-lg-6">
+                    <div class="card card-custom p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0"><i class="fa-solid fa-tasks text-primary me-2"></i>Mis Solicitudes Online</h5>
+                            <button class="btn btn-sm btn-outline-primary" onclick="openNewProcedureModal()"><i class="fa-solid fa-plus me-1"></i> Nuevo Trámite</button>
+                        </div>
+
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item px-0 py-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-dark">Solicitud de Equivalencias de Materias</strong>
+                                    <span class="badge bg-warning text-dark">En Revisión</span>
+                                </div>
+                                <p class="text-muted small mb-0">Tramite Nº 2026-9812 - Presentado el 15/09/2026</p>
+                            </div>
+
+                            <div class="list-group-item px-0 py-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-dark">Cambio de Comisión (Base de Datos II)</strong>
+                                    <span class="badge bg-success">Aprobado</span>
+                                </div>
+                                <p class="text-muted small mb-0">Tramite Nº 2026-8810 - Finalizado el 02/08/2026</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 5: COMMUNITY & NEWS SECTION           -->
+        <!-- ========================================== -->
+        <section id="view-news" class="view-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold m-0 text-primary-dark">Comunidad & Portal de Noticias</h3>
+                    <p class="text-muted small m-0">Novedades institucionales, eventos académicos y posgrados de ucsf.edu.ar</p>
+                </div>
+            </div>
+
+            <!-- Filters and Search Bar -->
+            <div class="card card-custom p-3 mb-4">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" class="form-control bg-light border-start-0" id="newsSearchInput" placeholder="Buscar noticias, comunicados o eventos..." onkeyup="filterNews()">
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-md-end gap-2">
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill active" onclick="filterNewsCategory('all', this)">Todas</button>
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="filterNewsCategory('academica', this)">Académicas</button>
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="filterNewsCategory('posgrado', this)">Posgrados</button>
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="filterNewsCategory('vida', this)">Vida Universitaria</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Grid -->
+            <div class="row g-4" id="newsGridContainer">
+                <div class="col-md-6 col-lg-4 news-card-item" data-category="academica">
+                    <div class="card card-custom h-100 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=500" class="card-img-top" height="180" style="object-fit: cover;" alt="Convenio UCSF">
+                        <div class="card-body p-3">
+                            <span class="badge bg-primary mb-2">Académicas</span>
+                            <h5 class="fw-bold card-title fs-6">UCSF firmó convenio marco de intercambio con universidades europeas</h5>
+                            <p class="card-text text-muted small">Los estudiantes avanzados podrán postularse para becas de intercambio durante el primer cuatrimestre de 2027.</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 p-3 pt-0 text-muted small">
+                            <i class="fa-regular fa-calendar me-1"></i> 30 Septiembre, 2026
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 news-card-item" data-category="posgrado">
+                    <div class="card card-custom h-100 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&q=80&w=500" class="card-img-top" height="180" style="object-fit: cover;" alt="Posgrados UCSF">
+                        <div class="card-body p-3">
+                            <span class="badge bg-success mb-2">Posgrados</span>
+                            <h5 class="fw-bold card-title fs-6">Inscripciones abiertas para Maestrías y Especializaciones 2027</h5>
+                            <p class="card-text text-muted small">Conoce la oferta académica con modalidad híbrida dirigida a profesionales y graduados de la región.</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 p-3 pt-0 text-muted small">
+                            <i class="fa-regular fa-calendar me-1"></i> 28 Septiembre, 2026
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 news-card-item" data-category="vida">
+                    <div class="card card-custom h-100 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=500" class="card-img-top" height="180" style="object-fit: cover;" alt="Jornadas Universitarias">
+                        <div class="card-body p-3">
+                            <span class="badge bg-info text-white mb-2">Vida Universitaria</span>
+                            <h5 class="fw-bold card-title fs-6">Exitoso desarrollo de las Jornadas de Innovación y Tecnología</h5>
+                            <p class="card-text text-muted small">Más de 500 alumnos participaron de conferencias, workshops y competencia de desarrollo en la sede central.</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 p-3 pt-0 text-muted small">
+                            <i class="fa-regular fa-calendar me-1"></i> 25 Septiembre, 2026
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 6: PUBLIC ACADEMIC OFFER (GUEST ROLE) -->
+        <!-- ========================================== -->
+        <section id="view-academic-offer" class="view-section">
+            <div class="bg-primary text-white rounded-3 p-4 p-md-5 mb-4 text-center">
+                <h2 class="fw-bold">Estudia en la Universidad Católica de Santa Fe</h2>
+                <p class="lead max-w-700 mx-auto">Sumate a nuestra comunidad académica. Inscripciones Abiertas 2027.</p>
+                <button class="btn btn-success btn-lg mt-2 fw-semibold" onclick="showToast('Iniciando proceso de pre-inscripción online', 'success')">Iniciar Pre-Inscripción 2027</button>
+            </div>
+
+            <h4 class="fw-bold mb-3">Nuestras Facultades & Carreras</h4>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card card-custom p-3 h-100">
+                        <i class="fa-solid fa-laptop-code fs-1 text-primary mb-3"></i>
+                        <h5 class="fw-bold">Facultad de Ciencia y Tecnología</h5>
+                        <ul class="list-unstyled text-muted small mb-0">
+                            <li>• Licenciatura en Tecnologías de la Información</li>
+                            <li>• Ingeniería en Sistemas</li>
+                            <li>• Licenciatura en Diseño Industrial</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-3 h-100">
+                        <i class="fa-solid fa-scale-balanced fs-1 text-primary mb-3"></i>
+                        <h5 class="fw-bold">Facultad de Derecho y Ciencia Política</h5>
+                        <ul class="list-unstyled text-muted small mb-0">
+                            <li>• Abogacía</li>
+                            <li>• Licenciatura en Relaciones Internacionales</li>
+                            <li>• Notariado</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-3 h-100">
+                        <i class="fa-solid fa-chart-line fs-1 text-primary mb-3"></i>
+                        <h5 class="fw-bold">Facultad de Ciencias Económicas</h5>
+                        <ul class="list-unstyled text-muted small mb-0">
+                            <li>• Contador Público</li>
+                            <li>• Licenciatura en Administración</li>
+                            <li>• Licenciatura en Comercialización</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL: Simulated Moodle Classroom -->
+    <div class="modal fade" id="moodleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title fw-bold" id="moodleModalTitle"><i class="fa-solid fa-laptop-code me-2 text-warning"></i>Entorno Virtual Moodle</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <div class="row g-4">
+                        <div class="col-md-8">
+                            <div class="card p-3 mb-3 border-0 shadow-sm">
+                                <h5 class="fw-bold text-primary mb-2">Avisos y Novedades de la Cátedra</h5>
+                                <p class="small text-muted mb-0">Bienvenidos al aula virtual. En la sección Recursos encontrarán el programa de la materia y el material teórico del segundo parcial.</p>
+                            </div>
+
+                            <div class="card p-3 border-0 shadow-sm">
+                                <h6 class="fw-bold mb-3"><i class="fa-solid fa-folder-open me-2 text-warning"></i>Trabajos Prácticos y Entregas</h6>
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <div>
+                                            <i class="fa-regular fa-file-pdf text-danger me-2"></i><strong>TP Nº 2: Análisis de Casos</strong>
+                                            <span class="d-block text-muted small">Fecha límite: Viernes 23:59 hs</span>
+                                        </div>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="showToast('Cargador de entregas listo', 'info')">Subir Tarea</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card p-3 border-0 shadow-sm mb-3">
+                                <h6 class="fw-bold mb-2">Participantes Recientes</h6>
+                                <small class="text-muted d-block">• Prof. Titular en línea</small>
+                                <small class="text-muted d-block">• 14 compañeros conectados</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Simulated Payment Gateway -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-credit-card me-2"></i>Pasarela de Pago Online UCSF</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center p-3 bg-light rounded-3 mb-3 border">
+                        <small class="text-muted d-block" id="payConceptText">Cuota Noviembre 2026</small>
+                        <h3 class="fw-bold text-primary m-0" id="payAmountText">$ 82.500,00</h3>
+                    </div>
+
+                    <form id="paymentForm" onsubmit="processPayment(event)">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Método de Pago</label>
+                            <select class="form-select" id="payMethodSelect">
+                                <option value="card">Tarjeta de Crédito / Débito (Visa / Mastercard)</option>
+                                <option value="mp">Mercado Pago</option>
+                                <option value="link">Red Link / VEP / Banelco</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Número de Tarjeta / Referencia</label>
+                            <input type="text" class="form-control" placeholder="4509 •••• •••• 8821" required>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Vencimiento</label>
+                                <input type="text" class="form-control" placeholder="MM/AA" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">CVC</label>
+                                <input type="password" class="form-control" placeholder="123" maxlength="4" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-ucsf-success w-100 py-2 fw-bold" id="paySubmitBtn">Confirmar y Pagar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Certificate Preview & Print -->
+    <div class="modal fade" id="certificateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="certificate-paper rounded-2" id="printableCertificate">
+                        <div class="certificate-watermark">UCSF OFICIAL</div>
+                        <div class="text-center mb-4">
+                            <i class="fa-solid fa-graduation-cap fs-1 text-primary mb-2"></i>
+                            <h4 class="fw-bold m-0 text-uppercase" style="letter-spacing: 1px;">Universidad Católica de Santa Fe</h4>
+                            <small class="text-muted">Secretaría de Autogestión Académica</small>
+                        </div>
+
+                        <h5 class="text-center fw-bold text-decoration-underline mb-4" id="certTypeTitle">CERTIFICADO DE ALUMNO REGULAR</h5>
+
+                        <p class="lh-lg fs-7">
+                            Por la presente se hace constar que el/la estudiante <strong>Jesús Romano Juárez</strong>, DNI Nº <strong>39.842.109</strong>, con legajo Nº <strong>UCSF-98421</strong>, se encuentra inscripto/a y reviste la condición de <strong>ALUMNO REGULAR</strong> en la carrera <strong>Licenciatura en Tecnologías de la Información</strong> durante el ciclo lectivo 2026.
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-end mt-5 pt-3 border-top">
+                            <div>
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=UCSF-VERIFY-DOCUMENT-98421" alt="QR Verificacion" class="border p-1 bg-white">
+                                <small class="d-block text-muted mt-1" style="font-size: 0.65rem;">Cód. Validación: 98421-2026-REG</small>
+                            </div>
+                            <div class="text-center">
+                                <div class="mb-2" style="font-family: cursive; font-size: 1.2rem; border-bottom: 1px solid #000; width: 180px;">S. Ocaño</div>
+                                <small class="fw-bold d-block">Firma Autorizada</small>
+                                <small class="text-muted d-block" style="font-size: 0.7rem;">UCSF Sede Central</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-ucsf-primary" onclick="printCertificate()"><i class="fa-solid fa-print me-1"></i> Imprimir / Guardar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Campus Map -->
+    <div class="modal fade" id="campusMapModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-map-location-dot me-2 text-primary"></i>Mapa de Aulas y Servicios - Sede Central</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=800" class="img-fluid rounded-3 border mb-3" alt="Plano Universidad">
+                    <div class="row text-start fs-7 g-2">
+                        <div class="col-md-6"><i class="fa-solid fa-location-dot text-danger me-1"></i> <strong>Aula 12:</strong> Primer Piso - Ala Norte</div>
+                        <div class="col-md-6"><i class="fa-solid fa-location-dot text-danger me-1"></i> <strong>Aula 04:</strong> Planta Baja - Galería Central</div>
+                        <div class="col-md-6"><i class="fa-solid fa-location-dot text-primary me-1"></i> <strong>Laboratorios de Informática:</strong> Segundo Piso</div>
+                        <div class="col-md-6"><i class="fa-solid fa-location-dot text-success me-1"></i> <strong>Biblioteca Central:</strong> Edificio Anexo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast align-items-center text-white bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2" id="toastMessage">
+                    <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                    <span>Acción realizada con éxito.</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // State Management
+        let currentRole = 'student'; // 'student' or 'guest'
+
+        // DOM Ready Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initSidebarToggle();
+        });
+
+        // Sidebar Collapse Handler
+        function initSidebarToggle() {
+            const sidebarToggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+
+            sidebarToggleBtn.addEventListener('click', () => {
+                if (window.innerWidth < 992) {
+                    sidebar.classList.toggle('show-mobile');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                }
+            });
+        }
+
+        // SPA Navigation Manager
+        function navigateTo(viewId, element) {
+            // Hide all views
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(v => v.classList.remove('active-view'));
+
+            // Show target view
+            const targetView = document.getElementById(`view-${viewId}`);
+            if (targetView) {
+                targetView.classList.add('active-view');
+            }
+
+            // Update sidebar nav active status
+            const navLinks = document.querySelectorAll('.sidebar-nav .nav-item-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            if (element) {
+                element.classList.add('active');
+            }
+
+            // Close mobile sidebar if open
+            if (window.innerWidth < 992) {
+                document.getElementById('sidebar').classList.remove('show-mobile');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Switch User Role Simulation (Estudiante vs Aspirante)
+        function switchUserRole(role) {
+            currentRole = role;
+            const privateModules = document.querySelectorAll('.private-student-module');
+            const publicGuestModule = document.querySelector('.public-guest-module');
+            const notifContainer = document.getElementById('notificationDropdownContainer');
+
+            const activeRoleName = document.getElementById('activeRoleName');
+            const roleStudentBtn = document.getElementById('roleStudentBtn');
+            const roleGuestBtn = document.getElementById('roleGuestBtn');
+
+            if (role === 'guest') {
+                // Adapt UI for Guest / Aspirante
+                privateModules.forEach(m => m.classList.add('d-none'));
+                publicGuestModule.classList.remove('d-none');
+                notifContainer.classList.add('d-none');
+
+                activeRoleName.textContent = 'Aspirante / Público General';
+                roleGuestBtn.classList.add('active');
+                roleStudentBtn.classList.remove('active');
+
+                // Update Header User Info
+                document.getElementById('userDropdownName').textContent = 'Visitante / Aspirante';
+                document.getElementById('userDropdownEmail').textContent = 'aspirante@ucsf.edu.ar';
+
+                // Redirect to Public Academic Offer
+                navigateTo('academic-offer', document.querySelector('[data-view=academic-offer]'));
+                showToast('Perfil cambiado a Aspirante. Vistas privadas ocultadas.', 'info');
+            } else {
+                // Adapt UI for Student
+                privateModules.forEach(m => m.classList.remove('d-none'));
+                publicGuestModule.classList.add('d-none');
+                notifContainer.classList.remove('d-none');
+
+                activeRoleName.textContent = 'Estudiante: Jesús Romano Juárez';
+                roleStudentBtn.classList.add('active');
+                roleGuestBtn.classList.remove('active');
+
+                // Restore Student Info
+                document.getElementById('userDropdownName').textContent = 'Jesús Romano Juárez';
+                document.getElementById('userDropdownEmail').textContent = 'j.romano@ucsf.edu.ar';
+
+                navigateTo('dashboard', document.querySelector('[data-view=dashboard]'));
+                showToast('Perfil de Estudiante restaurado.', 'success');
+            }
+        }
+
+        // Exam Registration Handler
+        function handleExamRegistration(subjectName, btnElement) {
+            btnElement.disabled = true;
+            btnElement.classList.remove('btn-ucsf-primary', 'btn-outline-primary');
+            btnElement.classList.add('btn-success');
+            btnElement.innerHTML = '<i class="fa-solid fa-check me-1"></i> Inscripto';
+
+            showToast(`Inscripción confirmada a la mesa de: ${subjectName}`, 'success');
+        }
+
+        // Moodle Interactive Modal Trigger
+        function openMoodleModal(subjectName) {
+            document.getElementById('moodleModalTitle').innerHTML = `<i class="fa-solid fa-laptop-code me-2 text-warning"></i>Moodle LMS: ${subjectName}`;
+            const moodleModal = new bootstrap.Modal(document.getElementById('moodleModal'));
+            moodleModal.show();
+        }
+
+        // Payment Modal Trigger & Processing
+        function openPaymentModal(concept, amount) {
+            document.getElementById('payConceptText').textContent = concept;
+            document.getElementById('payAmountText').textContent = amount;
+            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            modal.show();
+        }
+
+        function processPayment(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('paySubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Procesando Pago...';
+
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Confirmar y Pagar';
+
+                const modalEl = document.getElementById('paymentModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                modal.hide();
+
+                showToast('¡Pago procesado exitosamente! Comprobante disponible.', 'success');
+            }, 1500);
+        }
+
+        // Certificate Generator Modal Trigger
+        function generateCertificateModal(certType) {
+            document.getElementById('certTypeTitle').textContent = certType.toUpperCase();
+            const modal = new bootstrap.Modal(document.getElementById('certificateModal'));
+            modal.show();
+        }
+
+        function printCertificate() {
+            window.print();
+        }
+
+        // Campus Map Modal Trigger
+        function showCampusMapModal() {
+            const modal = new bootstrap.Modal(document.getElementById('campusMapModal'));
+            modal.show();
+        }
+
+        // Download Receipt Simulator
+        function downloadReceipt(period, amount) {
+            showToast(`Descargando comprobante de pago ${period} (${amount})...`, 'info');
+        }
+
+        // Notification Badges & Actions
+        function markAllNotificationsRead() {
+            const unreadItems = document.querySelectorAll('.notification-item.unread');
+            unreadItems.forEach(item => item.classList.remove('unread'));
+            document.getElementById('notifBadgeCount').style.display = 'none';
+            showToast('Todas las notificaciones marcadas como leídas', 'info');
+        }
+
+        // News Filtering Logic
+        function filterNews() {
+            const input = document.getElementById('newsSearchInput').value.toLowerCase();
+            const newsItems = document.querySelectorAll('.news-card-item');
+
+            newsItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(input)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function filterNewsCategory(category, btnElement) {
+            // Update active pill button
+            const buttons = btnElement.parentElement.querySelectorAll('button');
+            buttons.forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            const newsItems = document.querySelectorAll('.news-card-item');
+            newsItems.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Helper Toast Notification System
+        function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('liveToast');
+            const toastMsg = document.getElementById('toastMessage');
+
+            let icon = 'fa-circle-check text-success';
+            if (type === 'info') icon = 'fa-circle-info text-info';
+            if (type === 'warning') icon = 'fa-triangle-exclamation text-warning';
+
+            toastMsg.innerHTML = `<i class="fa-solid ${icon} fs-5"></i> <span>${message}</span>`;
+
+            const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+            toast.show();
+        }
+
+        // Logout Simulation
+        function triggerLogout() {
+            if (confirm('¿Deseas cerrar la sesión en el portal Mi UCSF?')) {
+                showToast('Sesión cerrada correctamente', 'info');
+                setTimeout(() => {
+                    switchUserRole('guest');
+                }, 800);
+            }
+        }
+    </script>
+</body>
+</html>
